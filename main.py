@@ -78,7 +78,20 @@ model.fit(x_train, y_train, batch_size=num_batch_size, epochs=num_epochs, valida
 test_accuracy = model.evaluate(x_test,y_test,verbose=0)
 
 
-filename = r'C:\Users\pavan\Desktop\donateacry-corpus\donateacry_corpus_cleaned_and_updated_data\discomfort\10A40438-09AA-4A21-83B4-8119F03F7A11-1430925142-1.0-f-26-dc.wav'
+import sounddevice as sd
+from scipy.io.wavfile import write
+
+def record_audio(duration, sample_rate, channels):
+    print("Recording...")
+    audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=channels)
+    sd.wait()
+    file_name = "recorded_audio.wav"
+    write(file_name, sample_rate, audio_data)
+    print("done")
+    return file_name
+
+
+filename = record_audio(10,44100,2)
 prediction_feature = feature_extractor(filename)
 
 prediction_feature = prediction_feature.reshape(1, -1)
